@@ -68,7 +68,7 @@ extern "C" {
 
 /* do bloom emulation (side effect: makes screen have black borders) */
 #define CRT_DO_BLOOM    0  /* does not work for NES */
-#define CRT_DO_VSYNC    1  /* look for VSYNC */
+#define CRT_DO_VSYNC    0  /* look for VSYNC */
 #define CRT_DO_HSYNC    1  /* look for HSYNC */
 
 struct CRT {
