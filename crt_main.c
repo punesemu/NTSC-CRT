@@ -218,7 +218,7 @@ main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    crt_init(&crt, outw, outh, CRT_PIX_FORMAT_BGRA, output);
+    NTSCCRT_SYM(crt_init)(&crt, outw, outh, CRT_PIX_FORMAT_BGRA, output);
     
     memset(&ntsc, 0, sizeof(struct NTSC_SETTINGS));
 
@@ -240,12 +240,12 @@ main(int argc, char **argv)
    
     /* accumulate 4 frames */
     while (err < 4) {
-        crt_modulate(&crt, &ntsc);
-        crt_demodulate(&crt, noise);
+        NTSCCRT_SYM(crt_modulate)(&crt, &ntsc);
+        NTSCCRT_SYM(crt_demodulate)(&crt, noise);
         if (!progressive) {
             ntsc.field ^= 1;
-            crt_modulate(&crt, &ntsc);
-            crt_demodulate(&crt, noise);
+            NTSCCRT_SYM(crt_modulate)(&crt, &ntsc);
+            NTSCCRT_SYM(crt_demodulate)(&crt, noise);
             if ((err & 1) == 0) {
                 /* a frame is two fields */
                 ntsc.frame ^= 1;
@@ -399,7 +399,7 @@ updatecb(void)
         printf("fadephos: %d\n", fadephos);
     }
     if (pkb_key_pressed('r')) {
-        crt_reset(&crt);
+        NTSCCRT_SYM(crt_reset)(&crt);
     }
     if (pkb_key_pressed('g')) {
         crt.scanlines ^= 1;
@@ -487,8 +487,8 @@ displaycb(void)
     ntsc.dot_crawl_offset = (ntsc.dot_crawl_offset + 1) % CRT_CC_VPER;
 #endif
 #endif
-    crt_modulate(&crt, &ntsc);
-    crt_demodulate(&crt, noise);
+    NTSCCRT_SYM(crt_modulate)(&crt, &ntsc);
+    NTSCCRT_SYM(crt_demodulate)(&crt, noise);
     if (!progressive) {
         field ^= 1;
     }
@@ -524,7 +524,7 @@ main(int argc, char **argv)
     
     printf(DRV_HEADER);
 
-    crt_init(&crt, info->width, info->height, CRT_PIX_FORMAT_BGRA, video);
+    NTSCCRT_SYM(crt_init)(&crt, info->width, info->height, CRT_PIX_FORMAT_BGRA, video);
     crt.blend = 1;
     crt.scanlines = 1;
 

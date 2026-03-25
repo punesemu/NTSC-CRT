@@ -123,7 +123,7 @@ iirf(struct IIRLP *f, int s)
 }
 
 extern void
-crt_modulate(struct CRT *v, struct NTSC_SETTINGS *s)
+NTSCCRT_SYM(crt_modulate)(struct CRT *v, struct NTSC_SETTINGS *s)
 {
     int x, y, xo, yo;
     int destw = AV_LEN;
@@ -173,11 +173,11 @@ crt_modulate(struct CRT *v, struct NTSC_SETTINGS *s)
             for (x = 0; x < CRT_CC_SAMPLES; x++) {
                 int step = (360 / CRT_CC_SAMPLES);
                 n = vert + s->hue + x * step;
-                crt_sincos14(&sn, &cs, (n - step + HUE_OFFSET) * 8192 / 180);
+                NTSCCRT_SYM(crt_sincos14)(&sn, &cs, (n - step + HUE_OFFSET) * 8192 / 180);
                 ccburst[y][x] = sn >> 10;
-                crt_sincos14(&sn, &cs, n * 8192 / 180);
+                NTSCCRT_SYM(crt_sincos14)(&sn, &cs, n * 8192 / 180);
                 ccmodI[y][x] = sn >> 10;
-                crt_sincos14(&sn, &cs, (n + Q_OFFSET) * 8192 / 180);
+                NTSCCRT_SYM(crt_sincos14)(&sn, &cs, (n + Q_OFFSET) * 8192 / 180);
                 ccmodQ[y][x] = sn >> 10;
             }
         }
@@ -187,7 +187,7 @@ crt_modulate(struct CRT *v, struct NTSC_SETTINGS *s)
         memset(ccmodQ, 0, sizeof(ccmodQ));
     }
     
-    bpp = crt_bpp4fmt(s->format);
+    bpp = NTSCCRT_SYM(crt_bpp4fmt)(s->format);
     if (bpp == 0) {
         return; /* just to be safe */
     }

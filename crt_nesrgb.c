@@ -47,7 +47,7 @@ setup_field(struct CRT *v)
 }
  
 extern void
-crt_modulate(struct CRT *v, struct NTSC_SETTINGS *s)
+NTSCCRT_SYM(crt_modulate)(struct CRT *v, struct NTSC_SETTINGS *s)
 {
     int x, y, xo, yo;
     int destw = AV_LEN;
@@ -69,16 +69,16 @@ crt_modulate(struct CRT *v, struct NTSC_SETTINGS *s)
         xo = (y + s->dot_crawl_offset) * (360 / CRT_CC_VPER);
         for (x = 0; x < CRT_CC_SAMPLES; x++) {
             n = xo + x * (360 / CRT_CC_SAMPLES);
-            crt_sincos14(&sn, &cs, (s->hue + 90 + n + 33) * 8192 / 180);
+            NTSCCRT_SYM(crt_sincos14)(&sn, &cs, (s->hue + 90 + n + 33) * 8192 / 180);
             ccburst[y][x] = sn >> 10;
-            crt_sincos14(&sn, &cs, n * 8192 / 180);
+            NTSCCRT_SYM(crt_sincos14)(&sn, &cs, n * 8192 / 180);
             ccmodI[y][x] = sn >> 10;
-            crt_sincos14(&sn, &cs, (n - 90) * 8192 / 180);
+            NTSCCRT_SYM(crt_sincos14)(&sn, &cs, (n - 90) * 8192 / 180);
             ccmodQ[y][x] = sn >> 10;
         }
     }
 
-    bpp = crt_bpp4fmt(s->format);
+    bpp = NTSCCRT_SYM(crt_bpp4fmt)(s->format);
     if (bpp == 0) {
         return; /* just to be safe */
     }

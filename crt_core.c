@@ -40,7 +40,7 @@ sintabil8(int n)
 
 /* 14-bit interpolated sine/cosine */
 extern void
-crt_sincos14(int *s, int *c, int n)
+NTSCCRT_SYM(crt_sincos14)(int *s, int *c, int n)
 {
     int h;
 
@@ -61,7 +61,7 @@ crt_sincos14(int *s, int *c, int n)
 }
 
 extern int
-crt_bpp4fmt(int format)
+NTSCCRT_SYM(crt_bpp4fmt)(int format)
 {
     switch (format) {
         case CRT_PIX_FORMAT_RGB:
@@ -181,13 +181,13 @@ init_eq(struct EQF *f,
     f->g[1] = g_mid;
     f->g[2] = g_hi;
 
-    crt_sincos14(&sn, &cs, T14_PI * f_lo / rate);
+    NTSCCRT_SYM(crt_sincos14)(&sn, &cs, T14_PI * f_lo / rate);
 #if (EQ_P >= 15)
     f->lf = 2 * (sn << (EQ_P - 15));
 #else
     f->lf = 2 * (sn >> (15 - EQ_P));
 #endif
-    crt_sincos14(&sn, &cs, T14_PI * f_hi / rate);
+    NTSCCRT_SYM(crt_sincos14)(&sn, &cs, T14_PI * f_hi / rate);
 #if (EQ_P >= 15)
     f->hf = 2 * (sn << (EQ_P - 15));
 #else
@@ -239,7 +239,7 @@ eqf(struct EQF *f, int s)
 /*****************************************************************************/
 
 extern void
-crt_resize(struct CRT *v, int w, int h, int f, unsigned char *out)
+NTSCCRT_SYM(crt_resize)(struct CRT *v, int w, int h, int f, unsigned char *out)
 {
     v->outw = w;
     v->outh = h;
@@ -248,7 +248,7 @@ crt_resize(struct CRT *v, int w, int h, int f, unsigned char *out)
 }
 
 extern void
-crt_reset(struct CRT *v)
+NTSCCRT_SYM(crt_reset)(struct CRT *v)
 {
     v->hue = 0;
     v->saturation = 10;
@@ -261,11 +261,11 @@ crt_reset(struct CRT *v)
 }
 
 extern void
-crt_init(struct CRT *v, int w, int h, int f, unsigned char *out)
+NTSCCRT_SYM(crt_init)(struct CRT *v, int w, int h, int f, unsigned char *out)
 {
     memset(v, 0, sizeof(struct CRT));
-    crt_resize(v, w, h, f, out);
-    crt_reset(v);
+    NTSCCRT_SYM(crt_resize)(v, w, h, f, out);
+    NTSCCRT_SYM(crt_reset)(v);
     v->rn = 194;
 
     /* kilohertz to line sample conversion */
@@ -289,7 +289,7 @@ crt_init(struct CRT *v, int w, int h, int f, unsigned char *out)
 }
 
 extern void
-crt_demodulate(struct CRT *v, int noise)
+NTSCCRT_SYM(crt_demodulate)(struct CRT *v, int noise)
 {
     /* made static so all this data does not go on the stack */
     static struct {
@@ -309,13 +309,13 @@ crt_demodulate(struct CRT *v, int noise)
     int max_e; /* approx maximum energy in a scan line */
 #endif
 
-    bpp = crt_bpp4fmt(v->out_format);
+    bpp = NTSCCRT_SYM(crt_bpp4fmt)(v->out_format);
     if (bpp == 0) {
         return;
     }
     pitch = v->outw * bpp;
 
-    crt_sincos14(&huesn, &huecs, ((v->hue % 360) + 33) * 8192 / 180);
+    NTSCCRT_SYM(crt_sincos14)(&huesn, &huecs, ((v->hue % 360) + 33) * 8192 / 180);
     huesn >>= 11; /* make 4-bit */
     huecs >>= 11;
 
@@ -352,7 +352,7 @@ found_field:
             int ln, sn, cs;
 
             ln = (i * line) / CRT_HRES;
-            crt_sincos14(&sn, &cs, ln * 8192 / 180);
+            NTSCCRT_SYM(crt_sincos14)(&sn, &cs, ln * 8192 / 180);
             nn = cs >> 8;
         }
 #else
@@ -499,10 +499,10 @@ vsync_found:
             /* create wave tables and rotate them by the hue adjustment angle */
             for (i = 0; i < CRT_CC_SAMPLES; i++) {
                 int sn, cs;
-                crt_sincos14(&sn, &cs, ang * 8192 / 180);
+                NTSCCRT_SYM(crt_sincos14)(&sn, &cs, ang * 8192 / 180);
                 waveI[i] = ((dci * cs + dcq * sn) >> 15) * v->saturation;
                 /* Q is offset by 90 */
-                crt_sincos14(&sn, &cs, (ang + 90) * 8192 / 180);
+                NTSCCRT_SYM(crt_sincos14)(&sn, &cs, (ang + 90) * 8192 / 180);
                 waveQ[i] = ((dci * cs + dcq * sn) >> 15) * v->saturation;
                 ang += (360 / CRT_CC_SAMPLES);
             }

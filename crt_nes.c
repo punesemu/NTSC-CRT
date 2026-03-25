@@ -104,7 +104,7 @@ setup_field(struct CRT *v)
 }
  
 extern void
-crt_modulate(struct CRT *v, struct NTSC_SETTINGS *s)
+NTSCCRT_SYM(crt_modulate)(struct CRT *v, struct NTSC_SETTINGS *s)
 {
     int x, y, xo, yo;
     int destw = AV_LEN;
@@ -124,7 +124,7 @@ crt_modulate(struct CRT *v, struct NTSC_SETTINGS *s)
         xo = (y + s->dot_crawl_offset) * (360 / CRT_CC_VPER);
         for (x = 0; x < CRT_CC_SAMPLES; x++) {
             n = (s->hue + x * (360 / CRT_CC_SAMPLES) + xo + 33) % 360;
-            crt_sincos14(&sn, &cs, n * 8192 / 180);
+            NTSCCRT_SYM(crt_sincos14)(&sn, &cs, n * 8192 / 180);
             ccburst[y][x] = sn >> 10;
         }
     }
@@ -202,7 +202,7 @@ crt_modulate(struct CRT *v, struct NTSC_SETTINGS *s)
 #else
 /* NOT NES_OPTIMIZED */
 extern void
-crt_modulate(struct CRT *v, struct NTSC_SETTINGS *s)
+NTSCCRT_SYM(crt_modulate)(struct CRT *v, struct NTSC_SETTINGS *s)
 {
     int x, y, xo, yo;
     int destw = AV_LEN;
@@ -217,7 +217,7 @@ crt_modulate(struct CRT *v, struct NTSC_SETTINGS *s)
         xo = (y + s->dot_crawl_offset) * (360 / CRT_CC_VPER);
         for (x = 0; x < CRT_CC_SAMPLES; x++) {
             n = (s->hue + x * (360 / CRT_CC_SAMPLES) + xo + 33) % 360;
-            crt_sincos14(&sn, &cs, n * 8192 / 180);
+            NTSCCRT_SYM(crt_sincos14)(&sn, &cs, n * 8192 / 180);
             ccburst[y][x] = sn >> 10;
         }
     }
